@@ -39,7 +39,7 @@
 #include <Mswsock.h>
 #include <stdio.h>
 #include <assert.h>
-
+#include <stdint.h>
 
 #define SIZEBUF 4096
 
@@ -350,7 +350,7 @@ void ocaml_iocp_read(value v_cp, value v_fd, value v_ba, value v_num_bytes, valu
     // printf("READ FILE %i %i %i %i\n", Handle_val(v_fd), Int_val(v_off), Int_val(v_num_bytes), ol->Offset);
 
     // Here we associate the file handle to the completion port handle...
-    void *buf = Caml_ba_data_val(v_ba) + Long_val(v_off);
+    void *buf = (uint8_t*) Caml_ba_data_val(v_ba) + Long_val(v_off);
     BOOL b = ReadFile(Handle_val(v_fd), buf, Int_val(v_num_bytes), NULL, ol);
     // The return value is non-zero (TRUE) on success. However, it is FALSE if the IO operation
     // is completing asynchronously. We change that behaviour by checking last error.
@@ -367,7 +367,7 @@ void ocaml_iocp_read(value v_cp, value v_fd, value v_ba, value v_num_bytes, valu
 }
 
 void ocaml_iocp_read_bytes(value* values, int argc) {
-    return ocaml_iocp_read(values[0], values[1], values[2], values[3], values[4], values[5]);
+    ocaml_iocp_read(values[0], values[1], values[2], values[3], values[4], values[5]);
 }
 
 void ocaml_iocp_write(value v_cp, value v_fd, value v_ba, value v_num_bytes, value v_off, value v_overlapped) {
@@ -377,7 +377,7 @@ void ocaml_iocp_write(value v_cp, value v_fd, value v_ba, value v_num_bytes, val
 
     // printf("iocp_write - overlapped=%p\n\n",(void*) ol);
     // Here we associate the file handle to the completion port handle...
-    void *buf = Caml_ba_data_val(v_ba) + Long_val(v_off);
+    void *buf = (uint8_t*)Caml_ba_data_val(v_ba) + Long_val(v_off);
     BOOL b = WriteFile(Handle_val(v_fd), buf, Int_val(v_num_bytes), NULL, ol);
 
     // The return value is non-zero (TRUE) on success. However, it is FALSE if the IO operation
@@ -395,7 +395,7 @@ void ocaml_iocp_write(value v_cp, value v_fd, value v_ba, value v_num_bytes, val
 }
 
 void ocaml_iocp_write_bytes(value* values, int argc) {
-    return ocaml_iocp_write(values[0], values[1], values[2], values[3], values[4], values[5]);
+    ocaml_iocp_write(values[0], values[1], values[2], values[3], values[4], values[5]);
 }
 
 GUID GuidGetAddrAcceptEx = WSAID_GETACCEPTEXSOCKADDRS;
@@ -596,7 +596,7 @@ ocaml_iocp_make_wsabuf(value v_cstructs, value v_len) {
     value v_ba = Field(v_cs, 0);
     value v_off = Field(v_cs, 1);
     value v_len = Field(v_cs, 2);
-    bufs[i].buf = Caml_ba_data_val(v_ba) + Long_val(v_off);
+    bufs[i].buf = (uint8_t*) Caml_ba_data_val(v_ba) + Long_val(v_off);
     bufs[i].len = Long_val(v_len);
     // dprintf("adding wsabuf %d: %p (%ld, %ld)\n", i, bufs[i].buf, Long_val(v_off), Long_val(v_len));
   }
