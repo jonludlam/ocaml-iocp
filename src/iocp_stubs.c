@@ -367,7 +367,7 @@ void ocaml_iocp_read(value v_cp, value v_fd, value v_ba, value v_num_bytes, valu
 }
 
 void ocaml_iocp_read_bytes(value* values, int argc) {
-    return ocaml_iocp_read(values[0], values[1], values[2], values[3], values[4], values[5]);
+    ocaml_iocp_read(values[0], values[1], values[2], values[3], values[4], values[5]);
 }
 
 void ocaml_iocp_write(value v_cp, value v_fd, value v_ba, value v_num_bytes, value v_off, value v_overlapped) {
@@ -395,7 +395,7 @@ void ocaml_iocp_write(value v_cp, value v_fd, value v_ba, value v_num_bytes, val
 }
 
 void ocaml_iocp_write_bytes(value* values, int argc) {
-    return ocaml_iocp_write(values[0], values[1], values[2], values[3], values[4], values[5]);
+    ocaml_iocp_write(values[0], values[1], values[2], values[3], values[4], values[5]);
 }
 
 GUID GuidGetAddrAcceptEx = WSAID_GETACCEPTEXSOCKADDRS;
